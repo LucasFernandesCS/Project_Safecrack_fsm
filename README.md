@@ -2,7 +2,7 @@
 
 Projeto de uma máquina de estados finitos (FSM) em SystemVerilog que implementa um cofre digital com senha de 3 dígitos, modo de programação seguro e bloqueio temporizado, otimizado para a placa FPGA DE2-115.
 
-![Diagrama da Máquina de Estados](docs/diagrama_fsm.jpg)
+![Diagrama da Máquina de Estados](Docs/diagrama_fsm.jpg)
 
 ## ✅ Funcionalidades
 
