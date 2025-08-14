@@ -1,7 +1,7 @@
 /**
  * @module safecrack_fsm_diagrama_final
- * @version 3.2 (Corrigido)
- * @brief Correção do bug de captura do primeiro dígito da tentativa.
+ * @version 3.3 (Corrigido)
+ * @brief Correção final do bug no reset do contador de erros.
  */
 module safecrack_fsm_diagrama_final (
     input  logic        clk,
@@ -57,15 +57,15 @@ module safecrack_fsm_diagrama_final (
         if (rst) state <= S_IDLE;
         else state <= next_state;
     end
-
-    // FSM - Função Auxiliar
+	 
+	 // FSM - Função Auxiliar
     function automatic bit passwords_match;
         return (password_reg[0] == attempt_reg[0]) &&
                (password_reg[1] == attempt_reg[1]) &&
                (password_reg[2] == attempt_reg[2]);
     endfunction
-
-    // FSM - Bloco 2: Próximo Estado
+	 
+	 // FSM - Bloco 2: Próximo Estado
     always_comb begin
         next_state = state;
         case (state)
@@ -103,14 +103,14 @@ module safecrack_fsm_diagrama_final (
 
             case (state)
                 S_IDLE: begin
-                    error_count <= 0;
                     if (next_state == S_INPUT) begin
                         if      (btn_fall_edge[0]) attempt_reg[0] <= 4'd0;
                         else if (btn_fall_edge[1]) attempt_reg[0] <= 4'd1;
                         else if (btn_fall_edge[2]) attempt_reg[0] <= 4'd2;
                         else if (btn_fall_edge[3]) attempt_reg[0] <= 4'd3;
-                        attempt_idx <= 1;                     end else begin
-                        attempt_idx <= 0; 
+                        attempt_idx <= 1;
+                    end else begin
+                        attempt_idx <= 0;
                     end
                 end
 
@@ -148,6 +148,9 @@ module safecrack_fsm_diagrama_final (
 
                 S_LOCKED: begin
                     timer_counter <= timer_counter + 1;
+                    if (next_state == S_IDLE) begin
+                        error_count <= 0;
+                    end
                 end
             endcase
         end
